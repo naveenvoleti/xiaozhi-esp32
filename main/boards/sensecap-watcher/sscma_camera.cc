@@ -275,7 +275,7 @@ SscmaCamera::SscmaCamera(esp_io_expander_handle_t io_exp_handle) {
     sscma_client_init(sscma_client_handle_);
 
     ESP_LOGI(TAG, "SSCMA client initialized");
-    // 设置分辨率
+    // Set resolution
     // 3 = 640x480
     if (sscma_client_set_sensor(sscma_client_handle_, 1, 3, true)) {
         ESP_LOGE(TAG, "Failed to set sensor");
@@ -284,14 +284,14 @@ SscmaCamera::SscmaCamera(esp_io_expander_handle_t io_exp_handle) {
         return;
     }
 
-    // 获取设备信息
+    // Get device information
     sscma_client_info_t *info;
     if (sscma_client_get_info(sscma_client_handle_, &info, true) == ESP_OK) {
         ESP_LOGI(TAG, "Device Info - ID: %s, Name: %s", 
             info->id ? info->id : "NULL", 
             info->name ? info->name : "NULL");
     }
-    // 初始化JPEG数据的内存
+    // Initialize memory for jpeg data
     jpeg_data_.len = 0;
     jpeg_data_.buf = (uint8_t*)heap_caps_malloc(IMG_JPEG_BUF_SIZE, MALLOC_CAP_SPIRAM);;
     if ( jpeg_data_.buf == nullptr ) {
@@ -299,7 +299,7 @@ SscmaCamera::SscmaCamera(esp_io_expander_handle_t io_exp_handle) {
         return;
     }
 
-    //初始化JPEG解码
+    //Initialize jpeg decoding
     jpeg_error_t err;
     jpeg_dec_config_t config = { .output_type = JPEG_PIXEL_FORMAT_RGB565_LE, .rotate = JPEG_ROTATE_0D };
     err = jpeg_dec_open(&config, &jpeg_dec_);
@@ -658,21 +658,21 @@ bool SscmaCamera::SetVFlip(bool enabled) {
 }
 
 /**
- * @brief 将摄像头捕获的图像发送到远程服务器进行AI分析和解释
- * 
- * 该函数将当前摄像头缓冲区中的图像编码为JPEG格式，并通过HTTP POST请求
- * 以multipart/form-data的形式发送到指定的解释服务器。服务器将根据提供的
- * 问题对图像进行AI分析并返回结果。
- * 
- * @param question 要向AI提出的关于图像的问题，将作为表单字段发送
- * @return std::string 服务器返回的JSON格式响应字符串
- *         成功时包含AI分析结果，失败时包含错误信息
- *         格式示例：{"success": true, "result": "分析结果"}
- *                  {"success": false, "message": "错误信息"}
- * 
- * @note 调用此函数前必须先调用SetExplainUrl()设置服务器URL
- * @note 函数会等待之前的编码线程完成后再开始新的处理
- * @warning 如果摄像头缓冲区为空或网络连接失败，将返回错误信息
+ *@brief Send the image captured by the camera to the remote server for AI analysis and interpretation
+ *
+ *This function encodes the image in the current camera buffer into JPEG format and requests it through HTTP POST
+ *Send to the specified interpretation server in the form of multipart/form-data. The server will use the provided
+ *Question performs AI analysis on images and returns results.
+ *
+ *@param question A question to ask the AI about the image, sent as a form field
+ *@return std::string JSON format response string returned by the server
+ *Contains AI analysis results when successful, and error information when failed.
+ *Format example: {"success": true, "result": "Analysis results"}
+ *{"success": false, "message": "error message"}
+ *
+ *@note You must first call SetExplainUrl() to set the server URL before calling this function.
+ *@note The function will wait for the previous encoding thread to complete before starting new processing
+*@warning If the camera buffer is empty or the network connection fails, an error message will be returned
  */
 std::string SscmaCamera::Explain(const std::string& question) {
     if (explain_url_.empty()) {

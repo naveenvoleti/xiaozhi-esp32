@@ -143,8 +143,8 @@ private:
 
         // 复用 I2C 总线
         esp_video_init_sccb_config_t sccb_config = {
-            .init_sccb = false,  // 不初始化新的 SCCB，使用现有的 I2C 总线
-            .i2c_handle = i2c_bus_,  // 使用现有的 I2C 总线句柄
+            .init_sccb = false,  // Do not initialize new SCCB, use existing I2C bus
+            .i2c_handle = i2c_bus_,  // Use existing I2C bus handle
             .freq = 100000,  // 100kHz
         };
 
@@ -202,7 +202,7 @@ private:
     void InitializeTools() {
         auto& mcp_server = McpServer::GetInstance();
         // 定义设备的属性
-        mcp_server.AddTool("self.chassis.get_light_mode", "获取灯光效果编号", PropertyList(), [this](const PropertyList& properties) -> ReturnValue {
+        mcp_server.AddTool("self.chassis.get_light_mode", "Get lighting effect number", PropertyList(), [this](const PropertyList& properties) -> ReturnValue {
             if (light_mode_ < 2) {
                 return 1;
             } else {
@@ -210,33 +210,33 @@ private:
             }
         });
 
-        mcp_server.AddTool("self.chassis.go_forward", "前进", PropertyList(), [this](const PropertyList& properties) -> ReturnValue {
+        mcp_server.AddTool("self.chassis.go_forward", "go ahead", PropertyList(), [this](const PropertyList& properties) -> ReturnValue {
             SendUartMessage("x0.0 y1.0");
             return true;
         });
 
-        mcp_server.AddTool("self.chassis.go_back", "后退", PropertyList(), [this](const PropertyList& properties) -> ReturnValue {
+        mcp_server.AddTool("self.chassis.go_back", "Back", PropertyList(), [this](const PropertyList& properties) -> ReturnValue {
             SendUartMessage("x0.0 y-1.0");
             return true;
         });
 
-        mcp_server.AddTool("self.chassis.turn_left", "向左转", PropertyList(), [this](const PropertyList& properties) -> ReturnValue {
+        mcp_server.AddTool("self.chassis.turn_left", "To the left", PropertyList(), [this](const PropertyList& properties) -> ReturnValue {
             SendUartMessage("x-1.0 y0.0");
             return true;
         });
 
-        mcp_server.AddTool("self.chassis.turn_right", "向右转", PropertyList(), [this](const PropertyList& properties) -> ReturnValue {
+        mcp_server.AddTool("self.chassis.turn_right", "turn right", PropertyList(), [this](const PropertyList& properties) -> ReturnValue {
             SendUartMessage("x1.0 y0.0");
             return true;
         });
         
-        mcp_server.AddTool("self.chassis.dance", "跳舞", PropertyList(), [this](const PropertyList& properties) -> ReturnValue {
+        mcp_server.AddTool("self.chassis.dance", "Dance", PropertyList(), [this](const PropertyList& properties) -> ReturnValue {
             SendUartMessage("d1");
             light_mode_ = LIGHT_MODE_MAX;
             return true;
         });
 
-        mcp_server.AddTool("self.chassis.switch_light_mode", "打开灯光效果", PropertyList({
+        mcp_server.AddTool("self.chassis.switch_light_mode", "Turn on lighting effects", PropertyList({
             Property("light_mode", kPropertyTypeInteger, 1, 6)
         }), [this](const PropertyList& properties) -> ReturnValue {
             char command_str[5] = {'w', 0, 0};

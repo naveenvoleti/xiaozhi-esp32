@@ -327,7 +327,7 @@ Esp32Camera::Esp32Camera(const esp_video_init_config_t& config) {
     }
 
 #ifdef CONFIG_ESP_VIDEO_ENABLE_ISP_VIDEO_DEVICE
-    // 当启用 ISP 时，ISP 需要一些照片来初始化参数，因此开启后后台拍摄5s照片并丢弃
+    // When ISP is enabled, ISP needs some photos to initialize parameters, so after it is enabled, it takes 5s photos in the background and discards them.
     xTaskCreate(
         [](void* arg) {
             Esp32Camera* self = static_cast<Esp32Camera*>(arg);
@@ -873,27 +873,27 @@ bool Esp32Camera::SetVFlip(bool enabled) {
 }
 
 /**
- * @brief 将摄像头捕获的图像发送到远程服务器进行AI分析和解释
+*@brief Send the image captured by the camera to the remote server for AI analysis and interpretation
  *
- * 该函数将当前摄像头缓冲区中的图像编码为JPEG格式，并通过HTTP POST请求
- * 以multipart/form-data的形式发送到指定的解释服务器。服务器将根据提供的
- * 问题对图像进行AI分析并返回结果。
+ *This function encodes the image in the current camera buffer into JPEG format and requests it through HTTP POST
+ *Send to the specified interpretation server in the form of multipart/form-data. The server will use the provided
+ *Question performs AI analysis on images and returns results.
  *
- * 实现特点：
- * - 使用独立线程编码JPEG，与主线程分离
- * - 采用分块传输编码(chunked transfer encoding)优化内存使用
- * - 通过队列机制实现编码线程和发送线程的数据同步
- * - 支持设备ID、客户端ID和认证令牌的HTTP头部配置
+ *Implementation features:
+ *-Encode JPEG using a separate thread, separate from the main thread
+ *-Use chunked transfer encoding to optimize memory usage
+ *-Implement data synchronization between encoding thread and sending thread through queue mechanism
+ *-Supports HTTP header configuration for device ID, client ID and authentication token
  *
- * @param question 要向AI提出的关于图像的问题，将作为表单字段发送
- * @return std::string 服务器返回的JSON格式响应字符串
- *         成功时包含AI分析结果，失败时包含错误信息
- *         格式示例：{"success": true, "result": "分析结果"}
- *                  {"success": false, "message": "错误信息"}
+ *@param question A question to ask the AI about the image, sent as a form field
+ *@return std::string JSON format response string returned by the server
+ *Contains AI analysis results when successful, and error information when failed.
+ *Format example: {"success": true, "result": "Analysis results"}
+*{"success": false, "message": "error message"}
  *
- * @note 调用此函数前必须先调用SetExplainUrl()设置服务器URL
- * @note 函数会等待之前的编码线程完成后再开始新的处理
- * @warning 如果摄像头缓冲区为空或网络连接失败，将返回错误信息
+ *@note You must first call SetExplainUrl() to set the server URL before calling this function.
+ *@note The function will wait for the previous encoding thread to complete before starting new processing
+ *@warning If the camera buffer is empty or the network connection fails, an error message will be returned
  */
 std::string Esp32Camera::Explain(const std::string& question) {
     if (explain_url_.empty()) {

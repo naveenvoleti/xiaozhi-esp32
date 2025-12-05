@@ -44,6 +44,6 @@ class PowerSaveButton : public Button {
 public:
     PowerSaveButton(gpio_num_t gpio_num) : Button(gpio_num, false, 0, 0, true) {
     }
-};
+    };
 
 #endif // BUTTON_H_

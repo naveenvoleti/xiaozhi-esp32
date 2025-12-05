@@ -1,10 +1,10 @@
 {
-    "target": "esp32",
+    "target": "esp32s3",
     "builds": [
         {
             "name": "bread-compact-esp32-lcd",
             "sdkconfig_append": [
-                "LCD_ST7789_240X240_7PIN=y"
+                "LCD_ST7789_240X135=y"
             ]
         }
     ]

@@ -1,0 +1,12 @@
+{
+    "target": "esp32",
+    "builds": [
+        {
+            "name": "electron-bot-2.0tft",
+            "sdkconfig_append": [
+                "CONFIG_PARTITION_TABLE_CUSTOM=y",
+                "CONFIG_PARTITION_TABLE_CUSTOM_FILENAME=\"partitions/v2/devkit.csv\""
+            ]
+        }
+    ]
+}

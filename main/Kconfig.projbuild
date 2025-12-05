@@ -30,7 +30,7 @@ config CUSTOM_ASSETS_FILE
 
 choice
     prompt "Default Language"
-    default LANGUAGE_ZH_CN
+    default LANGUAGE_EN_US
     help
         Select device display language
 
@@ -119,7 +119,7 @@ choice BOARD_TYPE
         Board type. 开发板类型
     config BOARD_TYPE_BREAD_COMPACT_WIFI
         bool "Bread Compact WiFi (面包板)"
-        depends on IDF_TARGET_ESP32S3
+        depends on IDF_TARGET_ESP32
     config BOARD_TYPE_BREAD_COMPACT_WIFI_LCD
         bool "Bread Compact WiFi + LCD (面包板)"
         depends on IDF_TARGET_ESP32S3
@@ -131,10 +131,10 @@ choice BOARD_TYPE
         depends on IDF_TARGET_ESP32S3
     config BOARD_TYPE_BREAD_COMPACT_ESP32
         bool "Bread Compact ESP32 DevKit (面包板)"
-        depends on IDF_TARGET_ESP32
+        depends on IDF_TARGET_ESP32S3
     config BOARD_TYPE_BREAD_COMPACT_ESP32_LCD
         bool "Bread Compact ESP32 DevKit + LCD (面包板)"
-        depends on IDF_TARGET_ESP32
+        depends on IDF_TARGET_ESP32S3
     config BOARD_TYPE_XMINI_C3_V3
         bool "Xmini C3 V3"
         depends on IDF_TARGET_ESP32C3
@@ -444,6 +444,27 @@ choice BOARD_TYPE
     config BOARD_TYPE_HU_087
         bool "HU-087"
         depends on IDF_TARGET_ESP32S3
+    config BOARD_TYPE_ESP32_CYD
+        bool "ESP32-CYD"
+        depends on IDF_TARGET_ESP32
+    config BOARD_TYPE_ESP32_CYD_SPARKY
+        bool "ESP32-CYD-SPARKY"
+        depends on IDF_TARGET_ESP32
+    config BOARD_TYPE_ESP32_DEVKIT_1_14TFT
+        bool "ESP32-DevKit-1.14TFT"
+        depends on IDF_TARGET_ESP32S3
+    config BOARD_TYPE_ELECTRON_BOT_1_14TFT
+        bool "electronBot-1.14TFT"
+        depends on IDF_TARGET_ESP32S3
+    config BOARD_TYPE_ELECTRON_BOT_2_0TFT
+        bool "electronBot-2.0TFT"
+        depends on IDF_TARGET_ESP32
+    config BOARD_TYPE_ESP32_DEVKIT_2_0TFT
+        bool "ESP32-DevKit-2.0TFT"
+        depends on IDF_TARGET_ESP32
+    config BOARD_TYPE_SPARKY
+        bool "sparky"
+        depends on IDF_TARGET_ESP32S3
 endchoice
 
 choice
@@ -535,7 +556,7 @@ choice DISPLAY_LCD_TYPE
     config LCD_TYPE_720_720_4_INCH
         bool "Waveshare ESP32-P4-WIFI6-Touch-LCD-4C with 720*720 4inch round display"
     config LCD_CUSTOM
-        bool "Custom LCD (自定义屏幕参数)"
+        bool "Custom LCD (Custom screen parameters)"
 endchoice
 
 choice DISPLAY_ESP32S3_KORVO2_V3
@@ -576,7 +597,7 @@ choice DISPLAY_STYLE
 
     config USE_EMOTE_MESSAGE_STYLE
         bool "Emote animation style"
-        depends on BOARD_TYPE_ESP_BOX_3 || BOARD_TYPE_ECHOEAR || BOARD_TYPE_LICHUANG_DEV_S3
+        depends on BOARD_TYPE_ESP_BOX_3 || BOARD_TYPE_ECHOEAR || BOARD_TYPE_LICHUANG_DEV_S3 || BOARD_TYPE_SPARKY
 endchoice
 
 choice WAKE_WORD_TYPE
@@ -613,14 +634,14 @@ endchoice
 
 config CUSTOM_WAKE_WORD
     string "Custom Wake Word"
-    default "xiao tu dou"
+    default "small potatoes"
     depends on USE_CUSTOM_WAKE_WORD
     help
         Custom Wake Word, use pinyin for Chinese, separated by spaces
 
 config CUSTOM_WAKE_WORD_DISPLAY
     string "Custom Wake Word Display"
-    default "小土豆"
+    default "small potatoes"
     depends on USE_CUSTOM_WAKE_WORD
     help
         Greeting sent to the server after wake word detection
@@ -654,7 +675,7 @@ config USE_DEVICE_AEC
         || BOARD_TYPE_LICHUANG_DEV_S3 || BOARD_TYPE_ESP_KORVO2_V3 || BOARD_TYPE_WAVESHARE_S3_TOUCH_AMOLED_1_75 || BOARD_TYPE_WAVESHARE_S3_TOUCH_LCD_1_83\
         || BOARD_TYPE_WAVESHARE_S3_TOUCH_AMOLED_2_06 || BOARD_TYPE_WAVESHARE_S3_TOUCH_LCD_4B || BOARD_TYPE_WAVESHARE_P4_WIFI6_TOUCH_LCD_4B || BOARD_TYPE_WAVESHARE_P4_WIFI6_TOUCH_LCD_7B \
         || BOARD_TYPE_WAVESHARE_P4_WIFI6_TOUCH_LCD_XC || BOARD_TYPE_ESP_S3_LCD_EV_Board_2 || BOARD_TYPE_YUNLIAO_S3 \
-        || BOARD_TYPE_ECHOEAR || BOARD_TYPE_WAVESHARE_S3_TOUCH_LCD_3_49)
+        || BOARD_TYPE_ECHOEAR || BOARD_TYPE_SPARKY || BOARD_TYPE_WAVESHARE_S3_TOUCH_LCD_3_49)
     help
         To work properly, device-side AEC requires a clean output reference path from the speaker signal and physical acoustic isolation between the microphone and speaker.
 
@@ -781,7 +802,7 @@ menu "TAIJIPAI_S3_CONFIG"
         prompt "taiji-pi-S3 I2S Type"
         default TAIJIPAI_I2S_TYPE_STD
         help
-            I2S 类型选择
+            I2S Type selection
         config TAIJIPAI_I2S_TYPE_STD
             bool "I2S Type STD"
         config TAIJIPAI_I2S_TYPE_PDM
@@ -792,7 +813,7 @@ menu "TAIJIPAI_S3_CONFIG"
     bool "Enable I2S 2 Slot"
     default y
     help
-        启动双声道
+        Enable dual-channel
 endmenu
 
 endmenu

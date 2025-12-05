@@ -1,6 +1,7 @@
 #include "circular_strip.h"
 #include "application.h"
 #include <esp_log.h>
+#include <string>
 
 #define TAG "CircularStrip"
 
@@ -56,6 +57,7 @@ void CircularStrip::SetAllColor(StripColor color) {
         led_strip_set_pixel(led_strip_, i, color.red, color.green, color.blue);
     }
     led_strip_refresh(led_strip_);
+    is_on_ = true;
 }
 
 void CircularStrip::SetSingleColor(uint8_t index, StripColor color) {
@@ -64,6 +66,7 @@ void CircularStrip::SetSingleColor(uint8_t index, StripColor color) {
     colors_[index] = color;
     led_strip_set_pixel(led_strip_, index, color.red, color.green, color.blue);
     led_strip_refresh(led_strip_);
+    is_on_ = true;
 }
 
 void CircularStrip::Blink(StripColor color, int interval_ms) {
@@ -82,6 +85,8 @@ void CircularStrip::Blink(StripColor color, int interval_ms) {
         }
         on = !on;
     });
+    should_blink_ = true;
+    is_on_ = true;
 }
 
 void CircularStrip::FadeOut(int interval_ms) {
@@ -103,6 +108,7 @@ void CircularStrip::FadeOut(int interval_ms) {
             led_strip_refresh(led_strip_);
         }
     });
+    is_on_ = true;
 }
 
 void CircularStrip::Breathe(StripColor low, StripColor high, int interval_ms) {
@@ -141,6 +147,7 @@ void CircularStrip::Breathe(StripColor low, StripColor high, int interval_ms) {
         }
         led_strip_refresh(led_strip_);
     });
+    is_on_ = true;
 }
 
 void CircularStrip::Scroll(StripColor low, StripColor high, int length, int interval_ms) {
@@ -162,6 +169,7 @@ void CircularStrip::Scroll(StripColor low, StripColor high, int length, int inte
         led_strip_refresh(led_strip_);
         offset = (offset + 1) % max_leds_;
     });
+    is_on_ = true;
 }
 
 void CircularStrip::StartStripTask(int interval_ms, std::function<void()> cb) {
@@ -180,6 +188,49 @@ void CircularStrip::SetBrightness(uint8_t default_brightness, uint8_t low_bright
     default_brightness_ = default_brightness;
     low_brightness_ = low_brightness;
     OnStateChanged();
+}
+
+void CircularStrip::SetBrightness(uint8_t default_brightness, uint8_t low_brightness, bool on_state_changed) {
+    default_brightness_ = default_brightness;
+    low_brightness_ = low_brightness;
+    if (default_brightness > LOW_BRIGHTNESS) {
+        is_on_ = true;
+    } else {
+        is_on_ = false;
+    }
+    if (on_state_changed) {
+        OnStateChanged();
+    }
+    // led_strip_refresh(led_strip_);
+}
+
+void CircularStrip::TurnOff() {
+    std::lock_guard<std::mutex> lock(mutex_);
+    if (esp_timer_stop(strip_timer_) != ESP_OK) {
+        ESP_LOGE(TAG, "Failed to stop strip timer");
+    }
+    if (led_strip_clear(led_strip_) != ESP_OK) {
+        ESP_LOGE(TAG, "Failed to clear led strip");
+    }
+    if (led_strip_refresh(led_strip_) != ESP_OK) {
+        ESP_LOGE(TAG, "Failed to refresh led strip");
+    }
+    is_on_ = false;
+}
+
+std::string CircularStrip::GetState() const {
+    bool is_blinking = should_blink_ && (blink_task_ != nullptr);
+    bool is_led_on = is_on_ || is_blinking;
+    
+    char buffer[256];
+    snprintf(buffer, sizeof(buffer), 
+             "{\"r\": %d, \"g\": %d, \"b\": %d, \"is_on\": %s, \"is_blinking\": %s, \"blink_interval\": %d}",
+             colors_[0].red, colors_[0].green, colors_[0].blue, 
+             is_led_on ? "true" : "false",
+             is_blinking ? "true" : "false",
+             blink_interval_ms_);
+    
+    return std::string(buffer);
 }
 
 void CircularStrip::OnStateChanged() {

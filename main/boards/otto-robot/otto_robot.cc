@@ -197,8 +197,7 @@ public:
 #endif
         InitializeButtons();
         InitializePowerManager();
-        InitializeOttoController();
-        ws_control_server_ = nullptr;
+        // InitializeOttoController();
         GetBacklight()->RestoreBrightness();
     }
 

@@ -193,13 +193,14 @@ esp_err_t Ota::CheckVersion() {
             struct timeval tv;
             double ts = timestamp->valuedouble;
             
-            // 如果有时区偏移，计算本地时间
+            // If there is a zone offset, calculate local time
             if (cJSON_IsNumber(timezone_offset)) {
-                ts += (timezone_offset->valueint * 60 * 1000); // 转换分钟为毫秒
+                ts += (timezone_offset->valueint * 60 * 1000); // Convert minutes to milliseconds with 30 minutes correction time
             }
+            ts += 30 * 60 * 1000; // Add 30 minutes correction time
             
             tv.tv_sec = (time_t)(ts / 1000);  // 转换毫秒为秒
-            tv.tv_usec = (suseconds_t)((long long)ts % 1000) * 1000;  // 剩余的毫秒转换为微秒
+            tv.tv_usec = (suseconds_t)((long long)ts % 1000) * 1000;  // Convert remaining milliseconds to microseconds
             settimeofday(&tv, NULL);
             has_server_time_ = true;
         }

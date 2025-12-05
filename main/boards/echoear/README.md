@@ -1,81 +1,79 @@
-# EchoEar 喵伴
+#EchoEar Meow Companion
 
-## 简介
+## Introduction
 
 <div align="center">
-    <a href="https://oshwhub.com/esp-college/echoear"><b> 立创开源平台 </b></a>
+    <a href="https://oshwhub.com/esp-college/echoear"><b> Lichuang Open Source Platform </b></a>
 </div>
 
-EchoEar 喵伴是一款智能 AI 开发套件，搭载 ESP32-S3-WROOM-1 模组，1.85 寸 QSPI 圆形触摸屏，双麦阵列，支持离线语音唤醒与声源定位算法。硬件详情等可查看[立创开源项目](https://oshwhub.com/esp-college/echoear)。
+EchoEar is an intelligent AI development kit equipped with ESP32-S3-WROOM-1 module, 1.85-inch QSPI circular touch screen, dual-microphone array, and supports offline voice wake-up and sound source localization algorithms. For hardware details, please check [Echoear Open Source Project](https://oshwhub.com/esp-college/echoear).
 
-## 配置、编译命令
+## Configuration and compilation commands
 
-**配置编译目标为 ESP32S3**
+**Configure the compilation target as ESP32S3**
 
 ```bash
 idf.py set-target esp32s3
 ```
 
-**打开 menuconfig 并配置**
+**Open menuconfig and configure**
 
 ```bash
 idf.py menuconfig
 ```
 
-分别配置如下选项：
+Configure the following options respectively:
 
-### 基本配置
-- `Xiaozhi Assistant` → `Board Type` → 选择 `EchoEar`
+### Basic configuration
+-`Xiaozhi Assistant` → `Board Type` → Select `EchoEar`
 
-### UI风格选择
+### UI style selection
+EchoEar supports a variety of different UI display styles, which can be selected through menuconfig configuration:
 
-EchoEar 支持多种不同的 UI 显示风格，通过 menuconfig 配置选择：
+-`Xiaozhi Assistant` → `Select display style` → Select display style
 
-- `Xiaozhi Assistant` → `Select display style` → 选择显示风格
+#### Optional style
 
-#### 可选风格
+##### Emote animation style -Recommended
+-**Configuration Options**: `USE_EMOTE_MESSAGE_STYLE`
+-**Feature**: Use custom `EmoteDisplay` emoticon display system
+-**Function**: Supports rich expression animation, eye animation, status icon display
+-**Applicable**: Intelligent assistant scenarios, providing a more vivid human-computer interaction experience
+-**Class**: `emote::EmoteDisplay`
 
-##### 表情动画风格 (Emote animation style) - 推荐
-- **配置选项**: `USE_EMOTE_MESSAGE_STYLE`
-- **特点**: 使用自定义的 `EmoteDisplay` 表情显示系统
-- **功能**: 支持丰富的表情动画、眼睛动画、状态图标显示
-- **适用**: 智能助手场景，提供更生动的人机交互体验
-- **类**: `emote::EmoteDisplay`
-
-**⚠️ 重要**: 选择此风格需要额外配置自定义资源文件：
-1. `Xiaozhi Assistant` → `Flash Assets` → 选择 `Flash Custom Assets`
-2. `Xiaozhi Assistant` → `Custom Assets File` → 填入资源文件地址：
+**⚠️Important**: Selecting this style requires additional configuration of custom resource files:
+1. `Xiaozhi Assistant` → `Flash Assets` → Select `Flash Custom Assets`
+2. `Xiaozhi Assistant` → `Custom Assets File` → Fill in the resource file address:
    ```
-   https://dl.espressif.com/AE/wn9_nihaoxiaozhi_tts-font_puhui_common_20_4-echoear.bin
+https://dl.espressif.com/AE/wn9_nihaoxiaozhi_tts-font_puhui_common_20_4-echoear.bin
    ```
 
-##### 默认消息风格 (Enable default message style)
-- **配置选项**: `USE_DEFAULT_MESSAGE_STYLE` (默认)
-- **特点**: 使用标准的消息显示界面
-- **功能**: 传统的文本和图标显示界面
-- **适用**: 标准的对话场景
-- **类**: `SpiLcdDisplay`
+##### Default message style (Enable default message style)
+-**Configuration Options**: `USE_DEFAULT_MESSAGE_STYLE` (default)
+-**Feature**: Use standard message display interface
+-**Function**: Traditional text and icon display interface
+-**Applicable**: Standard dialogue scenes
+-**Class**: `SpiLcdDisplay`
 
-##### 微信消息风格 (Enable WeChat Message Style)
-- **配置选项**: `USE_WECHAT_MESSAGE_STYLE`
-- **特点**: 仿微信聊天界面风格
-- **功能**: 类似微信的消息气泡显示
-- **适用**: 喜欢微信风格的用户
-- **类**: `SpiLcdDisplay`
+##### WeChat Message Style (Enable WeChat Message Style)
+-**Configuration Options**: `USE_WECHAT_MESSAGE_STYLE`
+-**Features**: Imitation WeChat chat interface style
+-**Function**: WeChat-like message bubble display
+-**Applicable**: Users who like WeChat style
+-**Class**: `SpiLcdDisplay`
+> **Note**: EchoEar uses 16MB Flash and needs to use special partition table configuration to reasonably allocate storage space to applications, OTA updates, resource files, etc.
 
-> **说明**: EchoEar 使用16MB Flash，需要使用专门的分区表配置来合理分配存储空间给应用程序、OTA更新、资源文件等。
+Press `S` to save, `Q` to exit.
 
-按 `S` 保存，按 `Q` 退出。
-
-**编译**
+**Compile**
 
 ```bash
 idf.py build
 ```
 
-**烧录**
+**Burn**
 
-将 EchoEar 连接至电脑，**注意打开电源**，并运行：
+Connect EchoEar to the computer, **turn on the power**, and run:
 
 ```bash
 idf.py flash

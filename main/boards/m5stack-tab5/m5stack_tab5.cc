@@ -183,6 +183,27 @@ private:
         tp_io_config.scl_speed_hz = 100000;
         esp_lcd_new_panel_io_i2c(i2c_bus_, &tp_io_config, &tp_io_handle);
         esp_lcd_touch_new_i2c_gt911(tp_io_handle, &tp_cfg, &touch_);
+
+        // Can't detect touch? Testing of equipment to be replaced
+        // /* read data test */ 
+        // for (uint8_t i = 0; i < 50; i++) {
+        //     esp_lcd_touch_read_data(touch_);
+        //     if (touch_->data.points > 0) {
+        //         printf("\ntouch: %d, %d\n", touch_->data.coords[0].x, touch_->data.coords[0].y);
+        //     }
+        //     vTaskDelay(pdMS_TO_TICKS(100));
+        // }
+    }
+
+    void InitializeSpi() {
+        spi_bus_config_t buscfg = {};
+        buscfg.mosi_io_num = GPIO_NUM_37;
+        buscfg.miso_io_num = GPIO_NUM_NC;
+        buscfg.sclk_io_num = GPIO_NUM_36;
+        buscfg.quadwp_io_num = GPIO_NUM_NC;
+        buscfg.quadhd_io_num = GPIO_NUM_NC;
+        buscfg.max_transfer_sz = DISPLAY_WIDTH * DISPLAY_HEIGHT * sizeof(uint16_t);
+        ESP_ERROR_CHECK(spi_bus_initialize(SPI3_HOST, &buscfg, SPI_DMA_CH_AUTO));
     }
 
     void InitializeIli9881cDisplay() {

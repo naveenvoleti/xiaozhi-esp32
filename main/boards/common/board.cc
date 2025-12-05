@@ -20,6 +20,13 @@ Board::Board() {
         settings.SetString("uuid", uuid_);
     }
     ESP_LOGI(TAG, "UUID=%s SKU=%s", uuid_.c_str(), BOARD_NAME);
+    
+    // Initialize remote camera configuration if available
+    Settings camera_settings("camera_remote", false);
+    std::string capture_url = camera_settings.GetString("capture_url", "");
+    if (!capture_url.empty()) {
+        ESP_LOGI(TAG, "Remote camera configuration found, will use as fallback");
+    }
 }
 
 std::string Board::GenerateUuid() {

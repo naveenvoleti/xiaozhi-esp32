@@ -8,6 +8,7 @@
 #include <atomic>
 #include <mutex>
 #include <vector>
+#include <string>
 
 #define DEFAULT_BRIGHTNESS 32
 #define LOW_BRIGHTNESS 4
@@ -23,11 +24,14 @@ public:
 
     void OnStateChanged() override;
     void SetBrightness(uint8_t default_brightness, uint8_t low_brightness);
+    void SetBrightness(uint8_t default_brightness, uint8_t low_brightness, bool on_state_changed);
     void SetAllColor(StripColor color);
     void SetSingleColor(uint8_t index, StripColor color);
     void Blink(StripColor color, int interval_ms);
     void Breathe(StripColor low, StripColor high, int interval_ms);
     void Scroll(StripColor low, StripColor high, int length, int interval_ms);
+    void TurnOff();
+    std::string GetState() const;
 
 private:
     std::mutex mutex_;
@@ -39,6 +43,8 @@ private:
     int blink_interval_ms_ = 0;
     esp_timer_handle_t strip_timer_ = nullptr;
     std::function<void()> strip_callback_ = nullptr;
+    std::atomic<bool> should_blink_{false};
+    std::atomic<bool> is_on_{false};
 
     uint8_t default_brightness_ = DEFAULT_BRIGHTNESS;
     uint8_t low_brightness_ = LOW_BRIGHTNESS;

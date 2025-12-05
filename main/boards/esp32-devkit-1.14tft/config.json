@@ -1,0 +1,13 @@
+{
+    "target": "esp32s3",
+    "builds": [
+        {
+            "name": "esp32-devkit-1.14tft",
+            "sdkconfig_append": [
+                "CONFIG_PARTITION_TABLE_CUSTOM=y",
+                "CONFIG_PARTITION_TABLE_CUSTOM_FILENAME=\"partitions/v2/16m.csv\"",
+                "CONFIG_ESPTOOLPY_FLASHSIZE_16MB=y"
+            ]
+        }
+    ]
+}

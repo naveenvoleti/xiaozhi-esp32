@@ -92,7 +92,7 @@ public:
         InitializeGc9a01Display();
         InitializeButtons();
         InitializePowerManager();
-        InitializeController();
+        // InitializeController();
 
         if (DISPLAY_BACKLIGHT_PIN != GPIO_NUM_NC) {
             GetBacklight()->RestoreBrightness();
